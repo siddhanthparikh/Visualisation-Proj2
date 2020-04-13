@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+svg {
+  font: 10px sans-serif;
+  padding: 12px;
+}
+
+.axis,
+.frame {
+  shape-rendering: crispEdges;
+}
+
+.axis line {
+  stroke: #e8e8e8;
+}
+
+.axis path {
+  display: none;
+}
+
+.axis text {
+  fill: #999;
+}
+
+.cell text {
+  font-weight: bold;
+  text-transform: capitalize;
+  font-size: 15px;
+  fill: #222;
+}
+
+.frame {
+  fill: none;
+  stroke: #aaa;
+}
+
+.diagonal {
+  stroke: none;
+  fill: #fff;
+  fill-opacity: 0.8;
+}
+
+circle {
+  fill-opacity: .7;
+}
+
+circle.hidden {
+  fill: #ccc !important;
+}
+
+.extent {
+  fill: #000;
+  fill-opacity: .125;
+  stroke: #fff;
+}
+
+.line{
+   stroke : red;
+   stroke-width: 2px; 
+   fill: none;
+}
+
+</style>
+<body>
+
+<h1>
+  CSE 564 Project 2 Spring 2020 - Video Game Sales Visualisation
+</h1>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <h3>Task</h3>
+      <select class="selectpicker" id = 'selectoptions'>
+          <option>org_screeplot</option>
+          <option>random_screeplot</option>
+          <option>strat_screeplot</option>
+           <option>org_top2pcavectors</option>
+          <option>rnd_top2pcavectors</option>
+          <option>strat_top2pcavectors</option>
+          <option>org_mds_euc</option>
+          <option>rnd_mds_euc</option>
+          <option>strt_mds_euc</option>
+          <option>org_mds_cor</option>
+          <option>rnd_mds_cor</option>
+          <option>strt_mds_cor</option>
+          <option>org_scatterplotmatrix</option>
+          <option>rnd_scatterplotmatrix</option>
+          <option>strat_scatterplotmatrix</option>
+        </select>
+    </div>
+    <div class="col-sm">
+        <button type="button" onclick="make_plot()">Submit!</button>
+    </div>  
+  </div>
+</div>
+
+<div id="my_dataviz"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="//d3js.org/d3.v5.min.js"></script>
+
+<script>
+// <!------------------- Scatterplot matrix  -------------------------
+
+function make_plot(){
+  d3.select('body').selectAll('svg').remove();
+  plot_graph = document.getElementById('selectoptions').value;
+  console.log(plot_graph);
+  if(plot_graph == 'org_screeplot'){
+
+    $.post('/screeplot_org', {'data': 'recvd'}, function(data_post){
+      data_post = data_post["key"];
+      console.log(data_post);
+      screeplot(data_post);
+    });
+
+  }
+
+  else if(plot_graph == 'random_screeplot'){
+
+    $.post('/screeplot_rnd', {'data': 'recvd'}, function(data_post){
+      data_post = data_post["key"];
+      console.log(data_post);
+      screeplot(data_post);
+    });
+
+  }
+
+  else if(plot_graph == 'strat_screeplot'){
+
+    $.post('/screeplot_strat', {'data': 'recvd'}, function(data_post){
+      data_post = data_post["key"];
+      console.log(data_post);
+      screeplot(data_post);
+    });
+
+  }
+  // left
+  else if(plot_graph == 'org_top2pcavectors'){
+
+    $.post('/screeplot_rnd', {'data': 'recvd'}, function(data_post){
+      data_post = data_post["key"];
+      console.log(data_post);
+      screeplot(data_post);
+    });
+
+  }
+  // left
+  else if(plot_graph == 'rnd_top2pcavectors'){
+
+    $.post('/screeplot_rnd', {'data': 'recvd'}, function(data_post){
+      data_post = data_post["key"];
+      console.log(data_post);
+      screeplot(data_post);
+    });
+
+  }
+  // left
+  else if(plot_graph == 'strat_top2pcavectors'){
+
+    $.post('/screeplot_rnd', {'data': 'recvd'}, function(data_post){
+      data_post = data_post["key"];
+      console.log(data_post);
+      screeplot(data_post);
+    });
+
+  }
+
+  else if(plot_graph == 'org_mds_euc'){
+
+    $.post('/mds_euc_org', {'data': 'recvd'}, function(data_post){
+      console.log(data_post);
+      data_post = data_post["key"];
+      
+      scatterplot(data_post);
+    });
+
+  }
+
+  else if(plot_graph == 'rnd_mds_euc'){
+
+    $.post('/mds_euc_rnd', {'data': 'recvd'}, function(data_post){
+      console.log(data_post);
+      data_post = data_post["key"];
+      console.log(data_post);
+      scatterplot(data_post);
+    });
+
+  }
+
+  else if(plot_graph == 'strt_mds_euc'){
+
+    $.post('/mds_euc_strat', {'data': 'recvd'}, function(data_post){
+      data_post = data_post["key"];
+      console.log(data_post);
+      scatterplot(data_post);
+    });
+
+  }
+
+  else if(plot_graph == 'org_mds_cor'){
+
+    $.post('/mds_cor_org', {'data': 'recvd'}, function(data_post){
+      data_post = data_post["key"];
+      console.log(data_post);
+      scatterplot(data_post);
+    });
+
+  }
+
+  else if(plot_graph == 'rnd_mds_cor'){
+
+    $.post('/rnd_cor_org', {'data': 'recvd'}, function(data_post){
+      data_post = data_post["key"];
+      console.log(data_post);
+      scatterplot(data_post);
+    });
+
+  } 
+
+  else if(plot_graph == 'strt_mds_cor'){
+
+    $.post('/mds_cor_strat', {'data': 'recvd'}, function(data_post){
+      data_post = data_post["key"];
+      console.log(data_post);
+      scatterplot(data_post);
+    });
+
+  } 
+  // doubts
+  else if(plot_graph == 'org_scatterplotmatrix'){
+
+    $.post('/scatterplot_high_loading', {'data': 'recvd'}, function(data_post){
+      data_post = data_post["key"];
+      console.log(data_post);
+      scatterplotmatrix(data_post);
+    });
+
+  } 
+
+// doubts
+  else if(plot_graph == 'rnd_scatterplotmatrix'){
+
+    $.post('/ran', {'data': 'recvd'}, function(data_post){
+      data_post = data_post["key"];
+      console.log(data_post);
+      scatterplotmatrix(data_post);
+    });
+
+  } 
+  // doubts
+  else{
+
+    $.post('/ran', {'data': 'recvd'}, function(data_post){
+      data_post = data_post["key"];
+      console.log(data_post);
+      scatterplotmatrix(data_post);
+    });
+
+  } 
+}
+
+//---------------- GRAPH FUNCTIONS ---------------------------
+
+function screeplotfunc(){
+  $.post('/screeplot', {'data': 'recvd'}, function(data_post){
+    data_post = data_post["key"];
+    console.log(data_post);
+    screeplot(data_post);
+  });
+}
+
+// screeplotfunc()
+function screeplot(data){
+  var margin = {top: 10, right: 30, bottom: 30, left: 60},
+    width = 480 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+my_list = [];
+summing = 0;
+for(i = 0; i < data.length; i++){
+  summing += data[i]
+  my_list.push({"axis1":i+1, "axis2":data[i], "cum": summing});
+}
+console.log(my_list);
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+
+  // Add X axis
+  var x = d3.scaleBand()
+    .domain(my_list.map(function(d){return d["axis1"]}))
+    .range([ 0, width ]);
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0, d3.max(my_list, function(d) { return d['cum']; })])
+    .range([ height, 0]);
+  svg.append("g")
+    .call(d3.axisLeft(y));
+  console.log(x.bandwidth())
+
+var vale = d3.line()
+        .x(function(d) { return x(d["axis1"]); })
+        .y(function(d) { return y(d['cum']); });
+
+    svg.append("path")
+        .data([my_list])
+        .attr("class", "line")
+        .attr("d", vale);
+
+  // Add dots
+  svg.selectAll("bar")
+      .data(my_list)
+    .enter().append("rect")
+      .style("fill", "steelblue")
+      .attr("x", function(d) { return x(d["axis1"]); })
+      .attr("width", x.bandwidth())
+      .attr("y", function(d) { console.log(d["axis2"]);return y(d["axis2"]); })
+      .attr("height", function(d) { return height - y(d["axis2"]); });
+
+
+}
+
+
+
+// scatterplot
+function scatterplotfunc(){
+  $.post('/scatterplot', {'data': 'recvd'}, function(data_post){
+    data_post = data_post["key"];
+    scatterplot(data_post);
+  } );
+}
+// scatterplotfunc()
+function scatterplot(data){
+  var margin = {top: 10, right: 30, bottom: 30, left: 60},
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+
+  // Add X axis
+  var x = d3.scaleLinear()
+    .domain([0, d3.max(data, function(d){return d["axis1"]})])
+    .range([ 0, width ]);
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0, d3.max(data, function(d){return d["axis2"]})])
+    .range([ height, 0]);
+  svg.append("g")
+    .call(d3.axisLeft(y));
+
+  // Add dots
+  svg.append('g')
+    .selectAll("dot")
+    .data(data)
+    .enter()
+    .append("circle")
+      .attr("cx", function (d) { return x(d.axis1); } )
+      .attr("cy", function (d) { return y(d.axis2); } )
+      .attr("r", 1.5)
+      .style("fill", "#69b3a2")
+
+
+}
+
+function scatterplotmatrixfunc(){
+  $.post('/random', {'data': 'recvd'}, function(data_post){
+    data_post = data_post["key"];
+    scatterplotmatrix(data_post);
+  } );
+}
+// scatterplotmatrixfunc()
+function scatterplotmatrix(data){
+// var traits = ["sepal width", "sepal length", "petal width"],
+    
+var traits = [];
+var lol = data[0]; 
+for (var key of Object.keys(lol)) {
+    traits.push(key);
+}
+
+console.log(traits);
+
+var n = traits.length;
+
+var width = 1000,
+    size = (width / n) - 12,
+    padding = 24;
+
+var x = d3.scaleLinear()
+    .range([padding / 2, size - padding / 2]);
+
+var y = d3.scaleLinear()
+    .range([size - padding / 2, padding / 2]);
+
+// var xAxis = d3.axisBottom().scale(x).orient("bottom").tickFormat(d3.format("d"));
+var xAxis = d3.axisBottom()
+    .scale(x)
+    .ticks(5)
+    .tickFormat(d3.format("d"));
+
+var yAxis = d3.axisLeft()
+    .scale(y)
+    .ticks(5)
+    .tickFormat(d3.format("d"));;
+
+
+  var domainByTrait = {};
+
+  traits.forEach(function(trait) {
+    domainByTrait[trait] = d3.extent(data, function(d) { return d[trait]; });
+  });
+
+  console.log(domainByTrait);
+
+  xAxis.tickSize(size * n);
+  yAxis.tickSize(-size * n);
+
+  var svg = d3.select("body").append("svg")
+      .attr("width", size * n + padding)
+      .attr("height", size * n + padding)
+    .append("g")
+      .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
+
+  svg.selectAll(".x.axis")
+      .data(traits)
+    .enter().append("g")
+      .attr("class", "x axis")
+      .attr("transform", function(d, i) { return "translate(" + (n - i - 1) * size + ",0)"; })
+      .each(function(d) {
+        x.domain(domainByTrait[d]).nice();
+        d3.select(this).call(xAxis);
+      });
+
+  svg.selectAll(".y.axis")
+      .data(traits)
+    .enter().append("g")
+      .attr("class", "y axis")
+      .attr("transform", function(d, i) { return "translate(0," + i * size + ")"; })
+      .each(function(d) { y.domain(domainByTrait[d]); d3.select(this).call(yAxis); });
+
+  var cell = svg.selectAll(".cell")
+      .data(cross(traits, traits))
+    .enter().append("g")
+      .attr("class", "cell")
+      .attr("transform", function(d) { return "translate(" + (n - d.i - 1) * size + "," + d.j * size + ")"; })
+      .each(plot);
+
+  // Titles for the diagonal.
+  cell.filter(function(d) { return d.i === d.j; }).append("text")
+      .attr("x", size/2)
+      .attr("y", size/2)
+      .attr("text-anchor", "middle")
+      .text(function(d) { return d.x; });
+
+  //cell.call(brush);
+
+  function plot(p) {
+    var cell = d3.select(this);
+
+    x.domain(domainByTrait[p.x]);
+    y.domain(domainByTrait[p.y]);
+
+    cell.append("rect")
+        .attr("class", "frame")
+        .classed("diagonal", function(d) {return d.i === d.j; })
+        .attr("x", padding / 2)
+        .attr("y", padding / 2)
+        .attr("width", size - padding)
+        .attr("height", size - padding);
+
+    cell.filter(function(d) {return d.i !== d.j; })    // hide diagonal marks
+      .selectAll("circle")
+      .data(data)
+      .enter().append("circle")
+        .attr("cx", function(d) { return x(d[p.x]); })
+        .attr("cy", function(d) { return y(d[p.y]); })
+        .attr("r", 2.5);
+        // .style("fill", function(d) { return color(d["Major"]); });
+  }
+
+
+function cross(a, b) {
+  var c = [], n = a.length, m = b.length, i, j;
+  for (i = -1; ++i < n;) for (j = -1; ++j < m;) c.push({x: a[i], i: i, y: b[j], j: j});
+  return c;
+}
+
+}
+
+</script>
